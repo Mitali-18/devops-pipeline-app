@@ -1,0 +1,27 @@
+name: CI - Docker Build for Flask App
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build Docker Image
+      run: docker build -t devops-pipeline-app .
+
+    - name: Run Container for Test
+      run: |
+        docker run -d -p 5000:5000 devops-pipeline-app
+        sleep 5
+        curl http://localhost:5000
